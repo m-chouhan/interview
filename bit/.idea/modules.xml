@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bit.iml" filepath="$PROJECT_DIR$/.idea/modules/bit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bit_main.iml" filepath="$PROJECT_DIR$/.idea/modules/bit_main.iml" group="bit" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bit_test.iml" filepath="$PROJECT_DIR$/.idea/modules/bit_test.iml" group="bit" />
+    </modules>
+  </component>
+</project>
