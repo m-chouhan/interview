@@ -2,6 +2,10 @@ package problems;
 
 import java.util.Stack;
 
+/**
+ * Prints Solution of QueensProblem
+ * https://www.geeksforgeeks.org/printing-solutions-n-queen-problem/
+ */
 public class QueensProblem {
 
     static abstract class ChessPiece {
