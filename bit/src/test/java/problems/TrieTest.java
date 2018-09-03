@@ -37,8 +37,8 @@ public class TrieTest {
         assert (!INSTANCE.search("wo"));
 
         //what happnens when multiple items are present along same path ?
-        INSTANCE.insert("word");
-        INSTANCE.insert("wordy");
+        assert (INSTANCE.insert("word"));
+        assert (INSTANCE.insert("wordy"));
 
         assert (INSTANCE.remove("word"));
         assert (INSTANCE.search("wordy"));
@@ -58,6 +58,14 @@ public class TrieTest {
 
         INSTANCE.insert("Raju");
         assert (INSTANCE.search("Raju"));
+    }
+
+    @Test
+    public void shouldReturnFalseOnMultipleAddition() {
+        String word = "word";
+        assert (INSTANCE.insert(word));
+        assert (!INSTANCE.insert(word));
+        assert (INSTANCE.insert(word + "someRandomString"));
     }
 
     @Test

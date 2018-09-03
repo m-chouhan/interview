@@ -31,13 +31,15 @@ public class Trie {
         }
 
         int decrementAndGet() {
+            if (count == 0)
+                throw new IndexOutOfBoundsException("Count cannot be negative");
             return --count;
         }
 
         /**
          * @param word  : word which needs to be inserted
          * @param index : item which should be inserted into current node as children
-         * @return true if successfull | false otherwise
+         * @return true if successfull | false if already exist || some other error
          */
         public boolean insert(String word, int index) {
             //invalid state, should never happen
@@ -48,14 +50,21 @@ public class Trie {
             Character value = word.charAt(index);
             if (!childrens.containsKey(value)) childrens.put(value, new Node());
 
-            childrens.get(value).incrementAndGet();
-
+            Node child = childrens.get(value);
             //if last item in the string, mark children as terminal node
             if (index == (word.length() - 1)) {
-                childrens.get(value).isTerminalNode = true;
+                //item already exist
+                if (child.isTerminalNode) return false;
+                child.isTerminalNode = true;
+                child.incrementAndGet();
                 return true;
             }
-            return childrens.get(value).insert(word, index + 1);
+
+            if (child.insert(word, index + 1)) {
+                child.incrementAndGet();
+                return true;
+            }
+            return false;
         }
 
         public boolean search(String word, int index) {
@@ -84,12 +93,16 @@ public class Trie {
 
             Character value = word.charAt(index);
             if (!childrens.containsKey(value)) return false;
-            if (index == (word.length() - 1) && childrens.get(value).isTerminalNode) {
-                childrens.get(value).isTerminalNode = false;
-                if (childrens.get(value).decrementAndGet() == 0) {
-                    childrens.remove(value);
+
+            if (index == (word.length() - 1)) {
+                if (childrens.get(value).isTerminalNode) {
+                    childrens.get(value).isTerminalNode = false;
+                    if (childrens.get(value).decrementAndGet() == 0) {
+                        childrens.remove(value);
+                    }
+                    return true;
                 }
-                return true;
+                return false;
             }
 
             if (childrens.get(value).remove(word, index + 1)) {
