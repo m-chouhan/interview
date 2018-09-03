@@ -35,7 +35,7 @@ public class MinimumJumpsTest {
         assert (INSTANCE.findMinJumpCount(input, 0) == expectedOutput);
     }
 
-    //@Test
+    @Test
     public void shouldReturnMinJumpsIndices() {
         List<Integer> input = Arrays.asList(1, 3, 5, 8, 9, 2, 6, 7, 6, 8, 9);
         List<Integer> expectedOutput = Arrays.asList(0, 1, 3, 10);
