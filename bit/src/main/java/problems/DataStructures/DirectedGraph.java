@@ -1,28 +1,35 @@
 package problems.DataStructures;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DirectedGraph<T> extends Graph<T> {
 
-    class DirectedNode<T> extends Node<T> {
-        DirectedNode(T data) {
+    private final ArrayList<Node> nodeList = new ArrayList<>();
+
+    class DirectedNode<N> extends Node<N> {
+
+        private final List<DirectedNode<N>> neighbours = new ArrayList<>();
+
+        DirectedNode(N data) {
             super(data);
         }
 
         @Override
-        List<T> getNeighbours() {
-            return null;
+        List<DirectedNode<N>> getNeighbours() {
+            return neighbours;
         }
 
         @Override
-        boolean connect(Node<T> b) {
+        boolean connect(Node b) {
             return false;
         }
+
     }
 
     @Override
     public Node<T> createNode(T object) {
-        return null;
+        return new DirectedNode<T>(object);
     }
 
     @Override
@@ -31,7 +38,7 @@ public class DirectedGraph<T> extends Graph<T> {
     }
 
     @Override
-    public List<Node<T>> getAllItems() {
+    public List<Node> getAllItems() {
         return null;
     }
 }

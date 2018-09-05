@@ -6,11 +6,11 @@ public abstract class Graph<T> {
 
     static int OBJECT_COUNT = 0;
 
-    abstract class Node<T> {
+    abstract class Node<N> {
         int ID;
-        T data;
+        N data;
 
-        Node(T data) {
+        Node(N data) {
             this.data = data;
             ID = OBJECT_COUNT++;
         }
@@ -19,13 +19,13 @@ public abstract class Graph<T> {
             return ID;
         }
 
-        public T getData() {
+        public N getData() {
             return data;
         }
 
-        abstract List<T> getNeighbours();
+        abstract List<? extends Node<N>> getNeighbours();
 
-        abstract boolean connect(Node<T> b);
+        abstract boolean connect(Node b);
     }
 
     public abstract Node<T> createNode(T object);
