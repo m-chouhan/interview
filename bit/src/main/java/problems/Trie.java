@@ -45,7 +45,7 @@ public class Trie {
             //invalid state, should never happen
             //throw exception maybe ?
             if (index >= word.length() || index < 0)
-                return false;
+                throw new IndexOutOfBoundsException("Attepting to insert at invalid index");
 
             Character value = word.charAt(index);
             if (!childrens.containsKey(value)) childrens.put(value, new Node());
@@ -69,13 +69,15 @@ public class Trie {
 
         public boolean search(String word, int index) {
 
-            if (index >= word.length() || index < 0) return false;
+            if (index >= word.length() || index < 0)
+                throw new IndexOutOfBoundsException("Attempt to search at invalid index");
 
             Character value = word.charAt(index);
             if (!childrens.containsKey(value)) return false;
-
-            return (index == (word.length() - 1) && childrens.get(value).isTerminalNode) ||
-                    childrens.get(value).search(word, index + 1);
+            Node children = childrens.get(value);
+            if (index == (word.length() - 1))
+                return children.isTerminalNode;
+            return children.search(word, index + 1);
         }
 
         /**
@@ -89,7 +91,8 @@ public class Trie {
          */
         public boolean remove(String word, int index) {
 
-            if (index >= word.length() || index < 0) return false;
+            if (index >= word.length() || index < 0)
+                throw new IndexOutOfBoundsException("Attempt to remove from invalid index");
 
             Character value = word.charAt(index);
             if (!childrens.containsKey(value)) return false;
@@ -114,7 +117,7 @@ public class Trie {
         }
     }
 
-    Node root;
+    private Node root;
 
     public boolean insert(String word) {
 

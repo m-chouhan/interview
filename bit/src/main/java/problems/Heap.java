@@ -4,13 +4,11 @@ import java.util.LinkedList;
 
 public class Heap {
 
-    enum Type {LEAF, PARENT}
-
     class Node {
         Node left, right;
         public int value;
 
-        public Node(int value, Node left, Node right) {
+        Node(int value, Node left, Node right) {
             this.value = value;
             this.left = left;
             this.right = right;
@@ -64,6 +62,12 @@ public class Heap {
         System.out.println("Pushing " + item + " into queue");
         list.addLast(new Node(item, null, null));
         heapifyFromBottom(list.size() - 1);
+    }
+
+    public int getMin() {
+        if (list.size() == 0)
+            throw new IndexOutOfBoundsException("Attempt to call getMin on an empty array");
+        return list.get(0).value;
     }
 
     private void heapifyFromBottom(int index) {
