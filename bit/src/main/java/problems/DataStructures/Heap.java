@@ -1,10 +1,10 @@
-package problems;
+package problems.DataStructures;
 
 import java.util.LinkedList;
 
 public class Heap {
 
-    class Node {
+    public class Node {
         Node left, right;
         public int value;
 

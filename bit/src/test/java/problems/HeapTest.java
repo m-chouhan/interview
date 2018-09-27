@@ -1,6 +1,7 @@
 package problems;
 
 import org.junit.Test;
+import problems.DataStructures.Heap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
