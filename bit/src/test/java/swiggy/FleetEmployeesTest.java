@@ -5,6 +5,13 @@ import org.junit.Test;
 
 import java.util.List;
 
+/**
+ * Interview question asked at swiggy
+ * you have 3 types of employees
+ * city manager -> Fleet manager ->delivery executive
+ * and you need to create a tree like hirerarchy with the above order
+ * then you also need an operation to distribute bonus and keep track of top performers list
+ */
 public class FleetEmployeesTest {
 
     private EmployeeManager manager;
