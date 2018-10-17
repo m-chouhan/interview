@@ -12,7 +12,7 @@ class App extends Component {
         <p>Hello Thoughspot!</p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://github.com/m-chouhan/interview/tree/dev/thoughspot"
           target="_blank"
           rel="noopener noreferrer"
         >

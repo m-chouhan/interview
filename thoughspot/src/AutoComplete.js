@@ -1,13 +1,7 @@
 import React, { Component } from "react";
 import Downshift from "downshift";
-import { timer, Subject, from, of } from "rxjs";
-import {
-  switchMap,
-  flatMap,
-  debounce,
-  retry,
-  distinctUntilChanged
-} from "rxjs/operators";
+import { timer, Subject, from } from "rxjs";
+import { switchMap, debounce, distinctUntilChanged } from "rxjs/operators";
 
 import "./AutoComplete.css";
 import { getSuggestions } from "./api";
