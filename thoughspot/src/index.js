@@ -1,6 +1,7 @@
 import "./index.css";
 import ReactDOM from "react-dom";
 import React, { Component } from "react";
+import logo from "./thoughspot2.png";
 
 import AutoComplete from "./AutoComplete";
 
@@ -9,6 +10,15 @@ class App extends Component {
     return (
       <div className="App">
         <p>Hello Thoughspot!</p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub Link
+        </a>
+        <img src={logo} className="App-logo" alt="logo" />
         <AutoComplete />
       </div>
     );

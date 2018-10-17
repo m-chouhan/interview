@@ -1,19 +1,11 @@
 import React, { Component } from "react";
 import Downshift from "downshift";
+import { timer, Subject, from, of } from "rxjs";
 import {
-  Observable,
-  timer,
-  Subject,
-  ReplaySubject,
-  from,
-  of,
-  range
-} from "rxjs";
-import {
-  map,
-  filter,
   switchMap,
+  flatMap,
   debounce,
+  retry,
   distinctUntilChanged
 } from "rxjs/operators";
 
@@ -21,11 +13,25 @@ import "./AutoComplete.css";
 import { getSuggestions } from "./api";
 
 const event$ = new Subject();
+//our event pipeline which
+// : rejects any continuous duplicates
+// : passes only single input in 500 ms
+// : only caters to latest requests (switmap ignores previous streams)
+// : retries once if api fails
 const suggestions$ = event$.pipe(
   distinctUntilChanged(),
   debounce(() => timer(500)),
-  switchMap(string => from(getSuggestions(string).catch(error => [string])))
+  switchMap(string =>
+    from(
+      getSuggestions(string)
+        .catch(getSuggestions(string))
+        .catch(error => [string])
+    )
+  )
 );
+
+//emits events/changes in last word into above pipeline
+//uses downshift for rendering https://github.com/paypal/downshift
 
 export default class AutoComplete extends Component {
   constructor(props) {
@@ -37,15 +43,30 @@ export default class AutoComplete extends Component {
     suggestions$.subscribe(suggestions => this.setState({ suggestions }));
   }
 
-  itemSelected = text => {
-    console.log(`selected text is ${text}`);
-  };
+  //when an item is selected from dropdown, append selected word from dropdown
+  onDropdownItemSelect = selectedWord => {
+    console.log(`selected text is ${selectedWord}`);
+    const { text } = this.state;
+    let wordArray = text.trim().split(/\s+/);
+    wordArray.pop();
 
-  inputOnChange = event => {
+    let outputText =
+      wordArray.length > 0
+        ? wordArray.reduce((previous, current) => previous + " " + current) +
+          " "
+        : "";
+
+    this.setState({
+      text: outputText + selectedWord + " "
+    });
+  };
+  //when text input changes
+  onTextChange = event => {
     const text = event.target.value;
     this.setState({ text });
-    const words = text.split(" ");
-    event$.next(words[words.length - 1]);
+    //emit last word only for suggestions
+    const words = text.trim().split(/\s+/);
+    if (words.length > 0) event$.next(words[words.length - 1]);
   };
 
   renderSearchView = ({
@@ -59,9 +80,10 @@ export default class AutoComplete extends Component {
     return (
       <div>
         <input
+          className="input"
           {...getInputProps({
             placeholder: "Search",
-            onChange: this.inputOnChange,
+            onChange: this.onTextChange,
             value: this.state.text
           })}
         />
@@ -90,7 +112,10 @@ export default class AutoComplete extends Component {
 
   render = () => {
     return (
-      <Downshift onChange={this.itemSelected} itemToString={item => item}>
+      <Downshift
+        onChange={this.onDropdownItemSelect}
+        itemToString={item => item}
+      >
         {this.renderSearchView}
       </Downshift>
     );
