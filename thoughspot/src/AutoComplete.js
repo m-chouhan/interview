@@ -1,24 +1,54 @@
 import React, { Component } from "react";
 import Downshift from "downshift";
+import {
+  Observable,
+  timer,
+  Subject,
+  ReplaySubject,
+  from,
+  of,
+  range
+} from "rxjs";
+import {
+  map,
+  filter,
+  switchMap,
+  debounce,
+  distinctUntilChanged
+} from "rxjs/operators";
 
 import "./AutoComplete.css";
+import { getSuggestions } from "./api";
+
+const event$ = new Subject();
+const suggestions$ = event$.pipe(
+  distinctUntilChanged(),
+  debounce(() => timer(500)),
+  switchMap(string => from(getSuggestions(string).catch(error => [string])))
+);
 
 export default class AutoComplete extends Component {
-  state = {
-    suggestions: [
-      { name: "Harry Potter" },
-      { name: "Net Moves" },
-      { name: "Half of a yellow sun" },
-      { name: "The Da Vinci Code" },
-      { name: "Born a crime" }
-    ]
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: "",
+      suggestions: []
+    };
+    suggestions$.subscribe(suggestions => this.setState({ suggestions }));
+  }
+
+  itemSelected = text => {
+    console.log(`selected text is ${text}`);
   };
 
-  onChange = selectedBook => {
-    alert(`your favourite book is ${selectedBook.name}`);
+  inputOnChange = event => {
+    const text = event.target.value;
+    this.setState({ text });
+    const words = text.split(" ");
+    event$.next(words[words.length - 1]);
   };
 
-  renderChildren = ({
+  renderSearchView = ({
     getInputProps,
     getItemProps,
     isOpen,
@@ -28,21 +58,27 @@ export default class AutoComplete extends Component {
   }) => {
     return (
       <div>
-        <input {...getInputProps()} />
+        <input
+          {...getInputProps({
+            placeholder: "Search",
+            onChange: this.inputOnChange,
+            value: this.state.text
+          })}
+        />
         {isOpen ? (
           <div className="downshift-dropdown">
             {this.state.suggestions.map((item, index) => {
               return (
                 <div
                   className="dropdown-item"
-                  {...getItemProps({ key: item.name, index, item })}
+                  {...getItemProps({ key: item, index, item })}
                   style={{
                     backgroundColor:
                       highlightedIndex === index ? "lightgray" : "white",
                     fontWeight: selectedItem === item ? "bold" : "normal"
                   }}
                 >
-                  {item.name}
+                  {item}
                 </div>
               );
             })}
@@ -51,13 +87,11 @@ export default class AutoComplete extends Component {
       </div>
     );
   };
+
   render = () => {
     return (
-      <Downshift
-        onChange={this.onChange}
-        itemToString={books => (books ? books.name : "")}
-      >
-        {this.renderChildren}
+      <Downshift onChange={this.itemSelected} itemToString={item => item}>
+        {this.renderSearchView}
       </Downshift>
     );
   };
