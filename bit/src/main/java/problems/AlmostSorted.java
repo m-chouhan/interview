@@ -12,7 +12,7 @@ public class AlmostSorted {
 
     // Complete the almostSorted function below.
     static void almostSorted(int[] arr) {
-        
+
         if (arr.length <= 1) {
             System.out.println("no");
             return;
