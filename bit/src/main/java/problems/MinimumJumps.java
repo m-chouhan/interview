@@ -4,7 +4,12 @@ import java.util.List;
 
 public class MinimumJumps {
 
-
+    /**
+     * https://leetcode.com/problems/jump-game
+     *
+     * @param input
+     * @return
+     */
     public List<Integer> findJumpIndices(List<Integer> input) {
 
         return null;
@@ -38,5 +43,41 @@ public class MinimumJumps {
         }
         //bubble up not reachable case
         return (minJumps == -1) ? minJumps : minJumps + 1;
+    }
+
+
+    public boolean canJump(int[] nums) {
+        if (nums == null || nums.length <= 1) return true;
+        int[] cache = new int[nums.length];
+
+        for (int i = cache.length - 1; i >= 0; --i) {
+            int lastIndex = nums[i] + i;
+            if (lastIndex >= (cache.length - 1)) {
+                cache[i] = 1;
+                continue;
+            }
+            int j = lastIndex;
+            while (j > i) {
+                if (cache[j] == 1) break;
+                j--;
+            }
+            cache[i] = (i == j) ? -1 : 1;
+        }
+        return cache[0] == 1;
+    }
+
+    public boolean canJumpOptimized(int[] nums) {
+        if (nums == null || nums.length <= 1) return true;
+
+        int i = 0;
+        int maxReach = 0;
+        int lastIndex = nums.length - 1;
+
+        while (maxReach >= i && i <= lastIndex) {
+            if (maxReach >= lastIndex) return true;
+            maxReach = Math.max(maxReach, i + nums[i]);
+            ++i;
+        }
+        return false;
     }
 }

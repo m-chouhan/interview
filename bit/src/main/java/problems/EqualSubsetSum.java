@@ -1,8 +1,6 @@
 package problems;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Stack;
+import java.util.*;
 
 public class EqualSubsetSum {
 
@@ -57,5 +55,11 @@ public class EqualSubsetSum {
         for (int val : stack) System.out.println(val);
         Arrays.asList(1);
         System.out.println(equalSubsetSum.canPartition(new int[]{1, 2, 3}));
+
+        int arr[] = {1, 2};
+        Integer array[] = {1, 2, 3, 4, 5};
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        Collections.sort(arrayList, (a, b) -> a - b);
+        Arrays.sort(array, (a, b) -> a);
     }
 }
