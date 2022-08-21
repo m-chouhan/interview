@@ -11,12 +11,17 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+/** This class fetches list of points from a backend api, and then adds new points to the
+    list based on given granularity.
+    TODO : Use abstractions instead. 
+*/
 public class GMaps {
 
-    private static GMaps instance;
-    private final OkHttpClient httpClient;
-    private final PolylineDecoder polylineDecoder;
-    public static GMaps getInstance() {
+    static GMaps instance;
+    final OkHttpClient httpClient;
+    final PolylineDecoder polylineDecoder;
+
+    static GMaps getInstance() {
         if(instance == null)
             instance = new GMaps();
         return instance;
@@ -28,6 +33,7 @@ public class GMaps {
         polylineDecoder = new PolylineDecoder();
     }
 
+    /* Returns a list of points along shortest distance with given granularity */    
     List<Point> findPath(Point source, Point dest, double distance) {
         try {
             List<Point> path = fetchPath(source, dest);
@@ -38,7 +44,8 @@ public class GMaps {
         }
     }
 
-    private List<Point> updatePath(List<Point> path, double distance) {
+    /* Adds new points in list if distance < lenght of adjacent points. */    
+    List<Point> updatePath(List<Point> path, double distance) {
 
         LinkedList<Point> linkedList = new LinkedList<>();
 
@@ -50,13 +57,16 @@ public class GMaps {
                 List<Point> newPath = breakPath(prev, current, distance);
                 linkedList.addAll(newPath);
             }
-            else if(Math.abs(currentDist - distance) < 0.05f ) linkedList.add(current);
+            else if(Math.abs(currentDist - distance) < 0.05f ) {
+                linkedList.add(current); 
+            }
         }
 
         return linkedList;
     }
 
-    private List<Point> breakPath(Point prev, Point current, double distance) {
+    /* Addes points between previous and current points by distance */
+    List<Point> breakPath(Point prev, Point current, double distance) {
         LinkedList<Point> points = new LinkedList<>();
         double dx = current.lat - prev.lat, dy = current.lon - prev.lon;
         double reqDistance = measureDistance(prev, current);
@@ -74,7 +84,8 @@ public class GMaps {
         return points;
     }
 
-    private double measureDistance(Point current, Point prev) {
+    /* Returns distance between two points */
+    double measureDistance(Point current, Point prev) {
         double p = Math.PI/180;
         double lat2 = current.lat, lat1 = prev.lat, lon2 = current.lon, lon1 = prev.lon;
         double a = 0.5 - Math.cos((lat2 - lat1) * p)/2 +
@@ -83,7 +94,8 @@ public class GMaps {
         return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
     }
 
-    private List<Point> fetchPath(Point source, Point dest) throws Exception {
+    /* Fetch path from a backend api */    
+    List<Point> fetchPath(Point source, Point dest) throws Exception {
 
         Request request = new Request.Builder()
                 .url("https://maps.googleapis.com/maps/api/directions/json?" +
